@@ -20,7 +20,7 @@ def do_get_analytics(parser, token):
         code = None
     else:
         raise template.TemplateSyntaxError, "%r cannot take more than one argument" % tag_name
-   
+
     if not code:
         current_site = Site.objects.get_current()
     else:
@@ -30,13 +30,13 @@ def do_get_analytics(parser, token):
         current_site = None
 
     return AnalyticsNode(current_site, code, template_name)
-    
+
 class AnalyticsNode(template.Node):
     def __init__(self, site=None, code=None, template_name='google_analytics/analytics_template.html'):
         self.site = site
         self.code = code
         self.template_name = template_name
-        
+
     def render(self, context):
         content = ''
         if self.site:
@@ -49,7 +49,7 @@ class AnalyticsNode(template.Node):
             code = self.code
         else:
             return ''
-        
+
         if code.strip() != '':
             t = loader.get_template(self.template_name)
             c = Context({
@@ -61,6 +61,6 @@ class AnalyticsNode(template.Node):
             return t.render(c)
         else:
             return ''
-        
+
 register.tag('analytics', do_get_analytics)
 register.tag('analytics_async', do_get_analytics)

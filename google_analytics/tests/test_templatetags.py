@@ -3,7 +3,7 @@ from django.test import TestCase
 from django import template
 from django.contrib.sites.models import Site
 from google_analytics.models import Analytics
-from google_analytics.templatetags import analytics 
+from google_analytics.templatetags import analytic
 
 code7 = 'UA-777777-3' # for fixture-based codes
 code9 = 'UA-999999-1' # for explicit codes
@@ -36,11 +36,11 @@ class ParserTest(TestCase):
     def test_noarg_node_template(self):
         node = analytics.do_get_analytics(self.parser, self.token_noarg)
         self.assertEqual(node.template_name, 'google_analytics/test_template.html')
-    
+
     def test_onearg_node_template(self):
         node = analytics.do_get_analytics(self.parser, self.token_onearg)
         self.assertEqual(node.template_name, 'google_analytics/test_template.html')
-    
+
     def test_twoarg_node_exception(self):
         self.assertRaises(template.TemplateSyntaxError, analytics.do_get_analytics, self.parser, self.token_twoarg)
 
@@ -59,7 +59,7 @@ class NodeTest(TestCase):
     """Test set-up and rendering of AnalyticsNodes"""
 
     fixtures = ['analytics_test']
-    
+
     def setUp(self):
         self.site = Site.objects.get_current()
         self.node_noarg = analytics.AnalyticsNode()
@@ -74,7 +74,7 @@ class NodeTest(TestCase):
 
     def test_default_template_name(self):
         self.assertEqual(
-                self.node_code.template_name, 
+                self.node_code.template_name,
                 'google_analytics/analytics_template.html'
         )
 
@@ -90,12 +90,12 @@ class NodeTest(TestCase):
 
     def test_explicit_template_name(self):
         self.assertEqual(
-                self.node_explicit_template.template_name, 
+                self.node_explicit_template.template_name,
                 'google_analytics/test_template.html'
         )
         self.assertEqual(
                 self.node_explicit_template.render(template.Context()).strip(),
-                'Tracking code: %s' % code9 
+                'Tracking code: %s' % code9
         )
 
     def test_defined_site(self):
@@ -107,7 +107,7 @@ class NodeTest(TestCase):
         )
 
     def test_site_overrides_explicit_code(self):
-        """If both code and site are set, the site code will override the 
+        """If both code and site are set, the site code will override the
         explicitly set code.  This is contrary to how the tag works, but
         the parser never passes this combination of arguments."""
 
@@ -115,7 +115,5 @@ class NodeTest(TestCase):
         self.assertEqual(self.node_code_and_site.site, self.site)
         self.assertEqual(
                 self.node_code_and_site.render(template.Context()).strip(),
-                'Tracking code: %s' % code7 
+                'Tracking code: %s' % code7
         )
-    
-       
